@@ -71,8 +71,31 @@ public class Frequencer implements FrequencerInterface{
         // if suffix_i = suffix_j, it returns 0;   
 
         // ここにコードを記述せよ 
-        //                                          
-        return 0; // この行は変更しなければいけない。 
+        // i == j のとき suffix=i == suffix_j
+        if (i == j) {
+            return 0;
+        }
+
+        int minIndex = i <= j ? i : j;
+        int maxIndex = i + j - minIndex;
+        int spaceLength = mySpace.length;
+
+        // i != j のとき とりあえず mySpace の終端まで比較
+        for (int offset = 0; maxIndex + offset < spaceLength; offset++) {
+            if(mySpace[i + offset] > mySpace[j + offset]) {
+                return 1;
+            } else if (mySpace[i + offset] < mySpace[j + offset]) {
+                return -1;
+            }
+        }
+
+        // mySpace.subString(min,hoge) と suffix_max が等しい場合、suffix.length に合わせてreturn
+        if (i < j) {
+            return 1;
+        } else {
+            return -1;
+        }
+        // return 0; // この行は変更しなければいけない。 
     }
 
     public void setSpace(byte []space) { 
@@ -100,6 +123,21 @@ public class Frequencer implements FrequencerInterface{
         //   suffixArray[ 1]= 1:BA
         //   suffixArray[ 2]= 0:CBA
         // のようになるべきである。
+        // 
+        // とりあえず選択ソートを実装
+        for (int i = 0; i < space.length - 1; i++) {
+            int min = suffixArray[i];
+            int minIndex = i;
+            for (int j = i + 1; j < space.length; j++) {
+                int result = suffixCompare(min, suffixArray[j]);
+                if (result > 0) {
+                    min = suffixArray[j];
+                    minIndex = j;
+                }
+            }
+            suffixArray[minIndex] = suffixArray[i];
+            suffixArray[i] = min;
+        }
     }
 
     // ここから始まり、指定する範囲までは変更してはならないコードである。
@@ -176,7 +214,24 @@ public class Frequencer implements FrequencerInterface{
         //
         // ここに比較のコードを書け 
         //
-        return 0; // この行は変更しなければならない。
+
+        // 文字列を比較
+        int spaceLength = mySpace.length;
+        for (int offset = 0; i + offset < spaceLength && j + offset < k; offset++) {
+            if (mySpace[i + offset] > myTarget[j + offset]) { 
+                return 1;
+            } else if (mySpace[i + offset] < myTarget[j + offset]) {
+                return -1;
+            }
+        }
+
+        // suffix_i が target_j_k の接頭語である場合をreturn 
+        if (spaceLength - i < k - j) {
+            return -1;
+        }
+
+        // ここまでで引っかからない場合、suffix_iの先頭 k - j 文字は target_j_kに等しい
+        return 0;
     }
 
 
@@ -208,9 +263,18 @@ public class Frequencer implements FrequencerInterface{
         // Assuming the suffix array is created from "Hi Ho Hi Ho",                 
         // if target_start_end is "Ho ", it will return 6.                
         //                                                                          
-        // ここにコードを記述せよ。                                                 
-        //                                                                         
-        return suffixArray.length; //このコードは変更しなければならない。          
+        // ここにコードを記述せよ。                                                
+        // とりあえず愚直に線形探索
+        int len = suffixArray.length;
+        for (int i = 0; i < len; i++) {
+            int result = targetCompare(suffixArray[i], start, end);
+            if (result >= 0) {
+                return i;
+            }
+        }
+        // suffix がすべて target_j_k より小さいなら -1を返す
+        return -1;
+        // return suffixArray.length; //このコードは変更しなければならない。          
     }
 
     private int subByteEndIndex(int start, int end) {
@@ -240,9 +304,17 @@ public class Frequencer implements FrequencerInterface{
         // Assuming the suffix array is created from "Hi Ho Hi Ho",          
         // if target_start_end is"i", it will return 9 for "Hi Ho Hi Ho".    
         //                                                                   
-        //　ここにコードを記述せよ                                           
-        //                                                                   
-        return suffixArray.length; // この行は変更しなければならない、       
+        //　ここにコードを記述せよ
+        // とりあえず愚直に線形探索
+        int len = suffixArray.length;
+        for (int i = len - 1; i >= 0; i--) {
+            int result = targetCompare(suffixArray[i], start, end);
+            if (result <= 0) {
+                return i + 1;
+            }
+        }
+        // suffix がすべて target_j_k より大きいなら -1 を返す
+        return -1; //このコードは変更しなければならない。return suffixArray.length; // この行は変更しなければならない、       
     }
 
 
