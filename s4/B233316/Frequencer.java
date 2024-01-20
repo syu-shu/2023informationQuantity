@@ -272,8 +272,8 @@ public class Frequencer implements FrequencerInterface{
                 return i;
             }
         }
-        // suffix がすべて target_j_k より小さいなら -1を返す
-        return -1;
+        // suffix がすべて target_j_k より小さいならsuffixArrayの長さを返す
+        return len;
         // return suffixArray.length; //このコードは変更しなければならない。          
     }
 
@@ -313,8 +313,8 @@ public class Frequencer implements FrequencerInterface{
                 return i + 1;
             }
         }
-        // suffix がすべて target_j_k より大きいなら -1 を返す
-        return -1; //このコードは変更しなければならない。return suffixArray.length; // この行は変更しなければならない、       
+        // suffix がすべて target_j_k より大きいなら 0 を返す
+        return 0; //このコードは変更しなければならない。return suffixArray.length; // この行は変更しなければならない、       
     }
 
 
