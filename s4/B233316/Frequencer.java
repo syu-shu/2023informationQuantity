@@ -264,17 +264,35 @@ public class Frequencer implements FrequencerInterface{
         // if target_start_end is "Ho ", it will return 6.                
         //                                                                          
         // ここにコードを記述せよ。                                                
-        // とりあえず愚直に線形探索
-        int len = suffixArray.length;
-        for (int i = 0; i < len; i++) {
-            int result = targetCompare(suffixArray[i], start, end);
-            if (result >= 0) {
-                return i;
+        // binary_searchを実装
+        int l = 0;
+        int r = suffixArray.length;
+        int mid = (l + r) / 2;
+        while (l <= r) {
+            // まず現在のmidを比較
+            int result = targetCompare(suffixArray[mid], start, end);
+            // targetより小さいならlを更新して次
+            if (result < 0) {
+                l = mid + 1;
+            } else {
+                // ひとつ前のsuffixArrayを見て
+                int before = -1;
+                if (mid > 0) {
+                    before = targetCompare(suffixArray[mid - 1], start, end);
+                }
+                // それがtargetよりも小さい
+                // すなわち今指しているmidは境界だから
+                if (before < 0) {
+                    // return mid;
+                    break;
+                } else {
+                    // そうでなければrを更新
+                    r = mid - 1;
+                }
             }
+            mid = (l + r) / 2;
         }
-        // suffix がすべて target_j_k より小さいならsuffixArrayの長さを返す
-        return len;
-        // return suffixArray.length; //このコードは変更しなければならない。          
+        return mid;
     }
 
     private int subByteEndIndex(int start, int end) {
@@ -315,6 +333,8 @@ public class Frequencer implements FrequencerInterface{
         }
         // suffix がすべて target_j_k より大きいなら 0 を返す
         return 0; //このコードは変更しなければならない。return suffixArray.length; // この行は変更しなければならない、       
+
+        // binary_searchを実装
     }
 
 
