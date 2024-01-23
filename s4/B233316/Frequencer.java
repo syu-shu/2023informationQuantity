@@ -138,6 +138,8 @@ public class Frequencer implements FrequencerInterface{
             suffixArray[minIndex] = suffixArray[i];
             suffixArray[i] = min;
         }
+
+        // TODO:QUICK SORTを実装
     }
 
     // ここから始まり、指定する範囲までは変更してはならないコードである。
