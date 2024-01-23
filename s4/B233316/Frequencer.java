@@ -275,7 +275,7 @@ public class Frequencer implements FrequencerInterface{
             if (result < 0) {
                 l = mid + 1;
             } else {
-                // ひとつ前のsuffixArrayを見て
+                // ひとつ前のsuffixを見て
                 int before = -1;
                 if (mid > 0) {
                     before = targetCompare(suffixArray[mid - 1], start, end);
@@ -323,18 +323,35 @@ public class Frequencer implements FrequencerInterface{
         // if target_start_end is"i", it will return 9 for "Hi Ho Hi Ho".    
         //                                                                   
         //　ここにコードを記述せよ
-        // とりあえず愚直に線形探索
-        int len = suffixArray.length;
-        for (int i = len - 1; i >= 0; i--) {
-            int result = targetCompare(suffixArray[i], start, end);
-            if (result <= 0) {
-                return i + 1;
-            }
-        }
-        // suffix がすべて target_j_k より大きいなら 0 を返す
-        return 0; //このコードは変更しなければならない。return suffixArray.length; // この行は変更しなければならない、       
-
         // binary_searchを実装
+        int len = suffixArray.length;
+        int l = 0;
+        int r = len;
+        int mid = (l + r) / 2;
+        while (l <= r) {
+            // まず現在のmidを比較
+            int result = targetCompare(suffixArray[mid], start, end);
+            // targetより大きいならrを更新して次
+            if (result > 0) {
+                r = mid - 1;
+            } else {
+                // ひとつ後のsuffixを見て
+                int next = 1;
+                if (mid < len - 1) {
+                    next = targetCompare(suffixArray[mid + 1], start, end);
+                }
+                // それがtargetよりも大きい
+                // すなわち今指しているmidは境界だから
+                if (next > 0) {
+                    return mid + 1;
+                } else {
+                    // そうでなければlを更新
+                    l = mid + 1;
+                }
+            }
+            mid = (l + r) / 2;
+        }
+        return mid;
     }
 
 
