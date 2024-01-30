@@ -54,6 +54,7 @@ public class InformationEstimator implements InformationEstimatorInterface {
         mySpace = space; myFrequencer.setSpace(space);
     }
 
+    // TODO : dp
     @Override
     public double estimation(){
         if (myTarget == null || myTarget.length == 0) {
@@ -126,7 +127,7 @@ public class InformationEstimator implements InformationEstimatorInterface {
         value = myObject.estimation();
         myObject.setTarget("00".getBytes());
         value = myObject.estimation();
-        
+
     }
 }
 
